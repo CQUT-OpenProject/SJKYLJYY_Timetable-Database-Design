@@ -1,0 +1,258 @@
+{
+  "version": "8.0.46",
+  "tables": {
+    "timetable": 2,
+    "period_time": 16,
+    "course": 8,
+    "course_meeting": 9,
+    "meeting_week": 121
+  },
+  "constraints": "course\tCHECK\tcourse_chk_1\ncourse\tFOREIGN KEY\tfk_c_tt\ncourse\tPRIMARY KEY\tPRIMARY\ncourse\tUNIQUE\tcourse_PK\ncourse_meeting\tCHECK\tcourse_meeting_chk_1\ncourse_meeting\tFOREIGN KEY\tfk_cm_c\ncourse_meeting\tFOREIGN KEY\tfk_cm_end\ncourse_meeting\tFOREIGN KEY\tfk_cm_start\ncourse_meeting\tPRIMARY KEY\tPRIMARY\ncourse_meeting\tUNIQUE\tcourse_meeting_PK\nmeeting_week\tCHECK\tmeeting_week_chk_1\nmeeting_week\tFOREIGN KEY\tfk_mw_cm\nmeeting_week\tPRIMARY KEY\tPRIMARY\nmeeting_week\tUNIQUE\tmeeting_week_PK\nperiod_time\tCHECK\tperiod_time_chk_1\nperiod_time\tFOREIGN KEY\tfk_pt_tt\nperiod_time\tPRIMARY KEY\tPRIMARY\nperiod_time\tUNIQUE\tperiod_time_PK\ntimetable\tCHECK\ttimetable_chk_1\ntimetable\tPRIMARY KEY\tPRIMARY\ntimetable\tUNIQUE\ttimetable_PK",
+  "triggers": "tr_cm_i\ntr_cm_u\ntr_mw_i\ntr_mw_u\ntr_pt_d\ntr_pt_i\ntr_pt_u\ntr_tt_u",
+  "conflicts": "1\t1\t1\t5\t1\t1\t3\n1\t3\t1\t5\t1\t1\t3",
+  "week3": "数据库原理及应用\t1\t1\t2\t08:00:00\t09:40:00\t陈老师\t教学楼A101\n程序设计实践\t1\t2\t3\t08:55:00\t10:45:00\t赵老师\t实验楼B202\n大学英语\t1\t3\t4\t10:00:00\t11:40:00\t周老师\t教学楼A103\n高等数学\t2\t1\t2\t08:00:00\t09:40:00\t李老师\t教学楼A102\n体育\t5\t7\t8\t16:00:00\t17:40:00\t王老师\t运动场",
+  "tests": [
+    {
+      "name": "五张核心表",
+      "expected": "5",
+      "actual": "5",
+      "passed": true
+    },
+    {
+      "name": "六条外键",
+      "expected": "6",
+      "actual": "6",
+      "passed": true
+    },
+    {
+      "name": "五项表级CHECK",
+      "expected": "5",
+      "actual": "5",
+      "passed": true
+    },
+    {
+      "name": "多课表隔离",
+      "expected": "1:数据库原理及应用|2:数据库原理及应用",
+      "actual": "1:数据库原理及应用|2:数据库原理及应用",
+      "passed": true
+    },
+    {
+      "name": "同课程多安排",
+      "expected": "2",
+      "actual": "2",
+      "passed": true
+    },
+    {
+      "name": "双周安排",
+      "expected": "2,4,6,8,10,12,14,16,18,20",
+      "actual": "2,4,6,8,10,12,14,16,18,20",
+      "passed": true
+    },
+    {
+      "name": "单周安排",
+      "expected": "1,3,5,7,9,11,13,15,17,19",
+      "actual": "1,3,5,7,9,11,13,15,17,19",
+      "passed": true
+    },
+    {
+      "name": "不连续周次",
+      "expected": "2,5,9,14",
+      "actual": "2,5,9,14",
+      "passed": true
+    },
+    {
+      "name": "全学期周次展开",
+      "expected": "20",
+      "actual": "20",
+      "passed": true
+    },
+    {
+      "name": "冲突精确定位",
+      "expected": "1\t1\t1\t5\t1\t1\t3\n1\t3\t1\t5\t1\t1\t3",
+      "actual": "1\t1\t1\t5\t1\t1\t3\n1\t3\t1\t5\t1\t1\t3",
+      "passed": true
+    },
+    {
+      "name": "第3周课程数",
+      "expected": "5",
+      "actual": "5",
+      "passed": true
+    },
+    {
+      "name": "重复主键",
+      "expected": "拒绝；错误码 1062",
+      "actual": "ERROR 1062 (23000) at line 1: Duplicate entry '1-1' for key 'course.PRIMARY'",
+      "passed": true
+    },
+    {
+      "name": "不存在的课表外键",
+      "expected": "拒绝；错误码 1452",
+      "actual": "ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`personal_timetable`.`course`, CONSTRAINT `fk_c_tt` FOREIGN KEY (`timetable_id`) REFERENCES `timetable` (`timetable_id`) ON DELETE RESTRICT ON UPDATE RESTRICT)",
+      "passed": true
+    },
+    {
+      "name": "不存在的课程外键",
+      "expected": "拒绝；错误码 1452",
+      "actual": "ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`personal_timetable`.`course_meeting`, CONSTRAINT `fk_cm_c` FOREIGN KEY (`timetable_id`, `course_no`) REFERENCES `course` (`timetable_id`, `course_no`) ON DELETE RESTRICT ON UPDATE RESTRICT)",
+      "passed": true
+    },
+    {
+      "name": "非法星期",
+      "expected": "拒绝；错误码 3819",
+      "actual": "ERROR 3819 (HY000) at line 1: Check constraint 'course_meeting_chk_1' is violated.",
+      "passed": true
+    },
+    {
+      "name": "倒置节次",
+      "expected": "拒绝；错误码 3819",
+      "actual": "ERROR 3819 (HY000) at line 1: Check constraint 'course_meeting_chk_1' is violated.",
+      "passed": true
+    },
+    {
+      "name": "不存在的节次",
+      "expected": "拒绝；错误码 1644",
+      "actual": "ERROR 1644 (45000) at line 1: 上课安排的起止及中间节次必须全部存在",
+      "passed": true
+    },
+    {
+      "name": "新增越界周次",
+      "expected": "拒绝；错误码 1644",
+      "actual": "ERROR 1644 (45000) at line 1: 生效周次不在课表的学期范围内",
+      "passed": true
+    },
+    {
+      "name": "修改越界周次",
+      "expected": "拒绝；错误码 1644",
+      "actual": "ERROR 1644 (45000) at line 1: 生效周次不在课表的学期范围内",
+      "passed": true
+    },
+    {
+      "name": "缩小学期范围",
+      "expected": "拒绝；错误码 1644",
+      "actual": "ERROR 1644 (45000) at line 1: 修改学期范围前须先调整越界的已有周次",
+      "passed": true
+    },
+    {
+      "name": "删除使用中的节次",
+      "expected": "拒绝；错误码 1644",
+      "actual": "ERROR 1644 (45000) at line 1: 被上课安排使用的节次不可直接删除",
+      "passed": true
+    },
+    {
+      "name": "时间倒置",
+      "expected": "拒绝；错误码 3819",
+      "actual": "ERROR 3819 (HY000) at line 1: Check constraint 'period_time_chk_1' is violated.",
+      "passed": true
+    },
+    {
+      "name": "节次时间交叠",
+      "expected": "拒绝；错误码 1644",
+      "actual": "ERROR 1644 (45000) at line 1: 节次时间须按编号先后排列且不能重叠",
+      "passed": true
+    },
+    {
+      "name": "非周一的第一周日期",
+      "expected": "拒绝；错误码 3819",
+      "actual": "ERROR 3819 (HY000) at line 1: Check constraint 'timetable_chk_1' is violated.",
+      "passed": true
+    },
+    {
+      "name": "空课程名称",
+      "expected": "拒绝；错误码 3819",
+      "actual": "ERROR 3819 (HY000) at line 1: Check constraint 'course_chk_1' is violated.",
+      "passed": true
+    },
+    {
+      "name": "事务主动回滚",
+      "expected": "0",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "导入批次遇到重复主键失败",
+      "expected": "拒绝；错误码 1062",
+      "actual": "ERROR 1062 (23000) at line 1: Duplicate entry '1-1' for key 'course.PRIMARY'",
+      "passed": true
+    },
+    {
+      "name": "失败批次未留下部分数据",
+      "expected": "0",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "按依赖删除整张课表",
+      "expected": "0",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "删除中途异常触发回滚",
+      "expected": "拒绝；错误码 1644",
+      "actual": "ERROR 1644 (45000) at line 1: test rollback",
+      "passed": true
+    },
+    {
+      "name": "删除回滚恢复所有依赖记录",
+      "expected": "5",
+      "actual": "5",
+      "passed": true
+    },
+    {
+      "name": "相同时间但周次不相交",
+      "expected": "0",
+      "actual": "0",
+      "passed": true
+    },
+    {
+      "name": "备份恢复 timetable",
+      "expected": "全部字段与记录一致",
+      "actual": "一致",
+      "passed": true
+    },
+    {
+      "name": "备份恢复 period_time",
+      "expected": "全部字段与记录一致",
+      "actual": "一致",
+      "passed": true
+    },
+    {
+      "name": "备份恢复 course",
+      "expected": "全部字段与记录一致",
+      "actual": "一致",
+      "passed": true
+    },
+    {
+      "name": "备份恢复 course_meeting",
+      "expected": "全部字段与记录一致",
+      "actual": "一致",
+      "passed": true
+    },
+    {
+      "name": "备份恢复 meeting_week",
+      "expected": "全部字段与记录一致",
+      "actual": "一致",
+      "passed": true
+    },
+    {
+      "name": "恢复后约束",
+      "expected": "与原库一致",
+      "actual": "一致",
+      "passed": true
+    },
+    {
+      "name": "恢复后触发器",
+      "expected": "与原库一致",
+      "actual": "一致",
+      "passed": true
+    },
+    {
+      "name": "恢复后过程",
+      "expected": "与原库一致",
+      "actual": "一致",
+      "passed": true
+    }
+  ],
+  "passed": 40,
+  "total": 40
+}
